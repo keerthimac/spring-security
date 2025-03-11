@@ -6,6 +6,7 @@ import com.example.spring.security.with.jwt.entity.UserEntity;
 import com.example.spring.security.with.jwt.respository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class AuthServiceImpl implements AuthService{
         UserEntity userEntity = new UserEntity();
         userEntity.setName(signupUserDto.getName());
         userEntity.setEmail(signupUserDto.getEmail());
-        userEntity.setPassword(signupUserDto.getPassword());
+        userEntity.setPassword(new BCryptPasswordEncoder().encode(signupUserDto.getPassword()));
         userEntity.setPhone(signupUserDto.getPhone());
         UserEntity savedUser = userRepository.save(userEntity);
         UserDto userDto = new UserDto();

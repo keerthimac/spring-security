@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,11 @@ public class SignupUserController {
     @GetMapping("/")
     public String getSessionId(HttpServletRequest request){
         return request.getSession().getId();
+    }
+
+    @GetMapping("/csrf-token")
+    public CsrfToken getSessionToken(HttpServletRequest request){
+        return (CsrfToken) request.getAttribute("_csrf");
     }
 
     @PostMapping("/signup")
