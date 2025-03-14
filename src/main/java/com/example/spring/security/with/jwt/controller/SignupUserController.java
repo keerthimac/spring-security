@@ -38,4 +38,10 @@ public class SignupUserController {
         }
         return new ResponseEntity<>("Signup Failed",HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody SignupDto signupDto){
+        String response = authService.verify(signupDto);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 }

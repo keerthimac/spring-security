@@ -5,18 +5,20 @@ import com.example.spring.security.with.jwt.dto.UserDto;
 import com.example.spring.security.with.jwt.entity.UserEntity;
 import com.example.spring.security.with.jwt.respository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
 
     final UserRepository userRepository;
-    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
-    //final PasswordEncoder passwordEncoder;
+    final AuthenticationManager authManager;
+    final PasswordEncoder passwordEncoder;
+    final JwtService jwtService;
 
     @Override
     public UserDto createUser(SignupDto signupUserDto) {
@@ -31,5 +33,16 @@ public class AuthServiceImpl implements AuthService{
         userDto.setEmail(savedUser.getEmail());
         userDto.setPhone(savedUser.getPhone());
         return userDto;
+    }
+
+    @Override
+    public String verify(SignupDto signupDto) {
+        Authentication authentication = authManager.
+                authenticate(new UsernamePasswordAuthenticationToken(signupDto.getName(), signupDto.getPassword()));
+
+        if(authentication.isAuthenticated()){
+            return jwtService.generateToken(signupDto.getName());
+        }
+        return "Fail";
     }
 }
